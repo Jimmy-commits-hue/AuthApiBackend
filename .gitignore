@@ -1,0 +1,5 @@
+﻿.env
+.vs
+bin
+Migations
+obj
