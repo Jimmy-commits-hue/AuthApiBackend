@@ -1,6 +1,6 @@
-﻿using Web.Models;
+﻿using AuthApi.Models;
 
-namespace Web.Interfaces
+namespace AuthApi.Interfaces
 {
 
     public interface IUserRepository

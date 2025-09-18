@@ -1,4 +1,4 @@
-﻿namespace Web.GenerateCustomNumber
+﻿namespace AuthApi.GenerateCustomNumber
 {
 
     public static class GenerateVerificationCode

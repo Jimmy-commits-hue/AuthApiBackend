@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Web.Models;
+using AuthApi.Models;
 
-namespace Web.Security
+namespace AuthApi.Security
 {
     public class GenerateJwtToken
     {

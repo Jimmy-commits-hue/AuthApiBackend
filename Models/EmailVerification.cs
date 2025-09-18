@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models
+namespace AuthApi.Models
 {
 
+    [Index(nameof(verificationCode), IsUnique = true)]
     public class EmailVerification
     {
          
@@ -10,9 +12,9 @@ namespace Web.Models
         public Guid Id { get; set; }  = Guid.NewGuid();
 
         [Required]
-        public Guid userId { get; set; } 
+        public Guid userId { get; set; }
 
-        public User user { get; set; } = null!;
+        public User User { get; set; } = null!;
 
         [Required]
         public string? verificationCode {  get; set; }
@@ -20,11 +22,13 @@ namespace Web.Models
         [Required]
         public DateTime? ExpiresAt { get; set; }
 
+        public bool EmailSent { get; set; } = false;
+
         public int currentAttemptNumber { get; set; }
 
         public int maxNumberOfAttempts { get; set; } = 3;
 
-        public bool codeStatus { get; set; } = true;
+        public bool isActive { get; set; } = true;
         
     }
 

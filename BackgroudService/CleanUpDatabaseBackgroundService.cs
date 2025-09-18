@@ -1,7 +1,7 @@
-﻿using Web.Database;
+﻿using AuthApi.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.BackgroudService
+namespace AuthApi.BackgroudService
 {
 
     public class CleanUpDatabaseBackgroundService : BackgroundService
@@ -29,21 +29,11 @@ namespace Web.BackgroudService
                 
                 var db = scope.ServiceProvider.GetRequiredService<AuthApiDbContext>();
 
-                var cutOfftimer = TimeSpan.FromHours(-24);
+                var UsedVerificationCodes = await db.EmailVerification.Where(u => u.isActive == false)
+                                                  .ToListAsync(cancellationToken);
 
-                var notActiveUsers = await db.User.Where(u => u.isVerified == false).ToListAsync(cancellationToken);
-
-                if(notActiveUsers.Any())
-                {
-
-                    db.User.RemoveRange(notActiveUsers);
-                    await db.SaveChangesAsync();
-
-                }
-
-                var activeUserVerificationCodes = await db.EmailVerification.Where(u => u.codeStatus == false).ToListAsync(cancellationToken);
-
-                var oldTokens = await db.RefreshToken.Where(u => u.isActive == false).ToListAsync(cancellationToken);
+                var oldTokens = await db.RefreshToken.Where(u => u.isActive == false).
+                                ToListAsync(cancellationToken);
 
                 var reachedDailyLoginAttempts = await db.LoginAttempt.Where(u => u.isUserActive == false)
                                                 .ToListAsync(cancellationToken);
@@ -51,13 +41,13 @@ namespace Web.BackgroudService
                 if (reachedDailyLoginAttempts.Any())
                     db.LoginAttempt.RemoveRange(reachedDailyLoginAttempts);
 
-                if (activeUserVerificationCodes.Any())
-                    db.EmailVerification.RemoveRange(activeUserVerificationCodes);
+                if (UsedVerificationCodes.Any())
+                    db.EmailVerification.RemoveRange(UsedVerificationCodes);
 
                 if (oldTokens.Any())
                     db.RefreshToken.RemoveRange(oldTokens);
                 
-                await db.SaveChangesAsync();
+                await db.SaveChangesAsync(cancellationToken);
 
                 await Task.Delay(delay, cancellationToken);
 

@@ -1,4 +1,4 @@
-﻿namespace Web.Utilities
+﻿namespace AuthApi.Utilities
 {
 
     public static class TimeHelper

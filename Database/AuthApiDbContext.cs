@@ -1,7 +1,7 @@
-﻿using Web.Models;
+﻿using AuthApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.Database
+namespace AuthApi.Database
 {
 
     public class AuthApiDbContext : DbContext
@@ -19,15 +19,14 @@ namespace Web.Database
         {
 
             modelBuilder.Entity<User>().HasIndex(e => e.IdNumber).IsUnique();
-            //modelBuilder.Entity<User>().HasIndex(e => e.customNumber).IsUnique();
 
-            modelBuilder.Entity<User>().HasMany(u => u.emailVerification).WithOne(u => u.user).
+            modelBuilder.Entity<User>().HasMany(u => u.EmailVerification).WithOne(u => u.User).
                 HasForeignKey(u => u.userId).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>().HasMany(attempts => attempts.loginAttempts).WithOne(u => u.user).
+            modelBuilder.Entity<User>().HasMany(attempts => attempts.LoginAttempts).WithOne(u => u.User).
                 HasForeignKey(u => u.userId).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>().HasMany(refresh => refresh.refreshToken).WithOne(u => u.user).
+            modelBuilder.Entity<User>().HasMany(refresh => refresh.RefreshToken).WithOne(u => u.User).
                 HasForeignKey(u => u.userId).OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);

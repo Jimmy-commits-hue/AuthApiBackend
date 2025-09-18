@@ -1,11 +1,11 @@
-﻿using Web.DTOs;
-using Web.Interfaces;
-using Web.Models;
+﻿using AuthApi.DTOs;
+using AuthApi.Interfaces;
+using AuthApi.Models;
 using Microsoft.AspNetCore.Identity;
-using Web.Exceptions;
-using Web.Utilities;
+using AuthApi.Exceptions;
+using AuthApi.Utilities;
 
-namespace Web.Services
+namespace AuthApi.Services
 {
 
     public class UserService : IUserService
@@ -92,6 +92,14 @@ namespace Web.Services
 
         }
 
+        public async Task IsLoginEmailSent(User user)
+        {
+
+            user.sentLoginNumber = true;
+
+            await _db.UpdateAsync(user);
+
+        }
 
         public async Task UpdateUserAsync(User user)
         {

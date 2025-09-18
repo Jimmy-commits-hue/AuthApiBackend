@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Web.Models
+namespace AuthApi.Models
 {
 
     public class LoginAttempts
@@ -14,7 +14,7 @@ namespace Web.Models
         [Required]
         public Guid userId {  get; set; }
 
-        public User user { get; set; } = null!;
+        public User User { get; set; } = null!;
 
         public int currentAttemptNumber { get; set; }
 

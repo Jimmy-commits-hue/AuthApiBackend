@@ -1,11 +1,11 @@
-﻿using Web.DTOs;
-using Web.Interfaces;
+﻿using AuthApi.DTOs;
+using AuthApi.Interfaces;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Net.Smtp;
-using Web.Exceptions;
+using AuthApi.Exceptions;
 
-namespace Web.Services
+namespace AuthApi.Services
 {
     public class SendEmailService : ISendEmailService
     {
@@ -21,7 +21,7 @@ namespace Web.Services
 
         }
 
-        public async Task SendEmailWithCodeAsync(string toEmail, string FirstName, string Surname, Guid codeId)
+        public async Task SendEmailWithCodeAsync(string toEmail, string FirstName, string Surname, string code)
         {
 
             int attempt = 0;
@@ -46,18 +46,18 @@ namespace Web.Services
                                   <html>
                                      <body>
                                         <h1> Welcome to AuthApi, {FirstName} {Surname} </h1><hr>
-                                        <p> Please click on <q> Verify Below </q> to verify your email </p>
-                                        <p><a href={$"https://localhost:7287/api/User/verifyEmail?codeId={codeId}"}>
-                                           Verify Email</a></p>
+                                        
+                                        <p> <strong> Your Email Verification Code is : {code} </strong> </p>
+
                                         <hr>
-                                        <p> Email verification code will expire after 5 minutes </p>
+                                        <p> Email verification code will expire within 10 minutes </p>
                                    </html>
                                    "
 
                     };
 
                     email.Body = bodyBuilder.ToMessageBody();
-
+                    Console.WriteLine($"Attempting to send email to {0}");
                     var client = new SmtpClient(); 
                     await client.ConnectAsync(config.Host, int.Parse(config.Port), MailKit.Security.SecureSocketOptions.StartTls);
                     await client.AuthenticateAsync(Environment.GetEnvironmentVariable("FROM_EMAIL"), Environment.GetEnvironmentVariable("EMAIL_PASSWORD"));
@@ -75,10 +75,9 @@ namespace Web.Services
 
                         throw new FailedToSendEmailException($"Invalid email : {toEmail}");
                        
-
                     }
 
-                    await Task.Delay(TimeSpan.FromMinutes(2));
+                    await Task.Delay(TimeSpan.FromSeconds(2000));
                 }
 
             }

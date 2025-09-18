@@ -1,9 +1,9 @@
-﻿using Web.Database;
-using Web.Interfaces;
-using Web.Models;
+﻿using AuthApi.Database;
+using AuthApi.Interfaces;
+using AuthApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.Repository
+namespace AuthApi.Repository
 {
 
     public class EmaiLVerificationRepo : IEmailVerifRepo
@@ -26,10 +26,10 @@ namespace Web.Repository
 
         }
 
-        public async Task<EmailVerification?> GetCodeAsync(Guid Id)
+        public async Task<EmailVerification?> GetCodeAsync(string code)
         {
 
-            return await context.EmailVerification.FindAsync(Id);
+            return await context.EmailVerification.FirstOrDefaultAsync(u => u.verificationCode == code);
 
         }
 

@@ -1,10 +1,10 @@
-using Web.BackgroudService;
-using Web.Database;
-using Web.DTOs;
-using Web.Infrastructure;
-using Web.Interfaces;
-using Web.Repository;
-using Web.Services;
+using AuthApi.BackgroudService;
+using AuthApi.Database;
+using AuthApi.DTOs;
+using AuthApi.Infrastructure;
+using AuthApi.Interfaces;
+using AuthApi.Repository;
+using AuthApi.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Web.Security;
+using AuthApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +22,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GenerateJwtToken>();  
 builder.Services.AddSingleton<UserCustomNumberEnrich>();
 builder.Services.AddHostedService<CleanUpDatabaseBackgroundService>();
+builder.Services.AddHostedService<SendVerificationEmails>();
+builder.Services.AddHostedService<CleanUpUnActiveUsers>();
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -167,7 +169,6 @@ try
 
     builder.Services.AddAuthorization();
     var app = builder.Build();
-    //app.UseMiddleware<AuthApi.CustomJwtValidationMiddleWare.CustomJwtMiddleware>();
 
     if (app.Environment.IsDevelopment())
     {

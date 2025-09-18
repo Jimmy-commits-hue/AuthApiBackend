@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.DTOs
+namespace AuthApi.DTOs
 {
     public class DeleteUserDtos
     {

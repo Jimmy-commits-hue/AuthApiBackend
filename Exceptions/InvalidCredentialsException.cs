@@ -1,4 +1,4 @@
-﻿namespace Web.Exceptions
+﻿namespace AuthApi.Exceptions
 {
 
     public class InvalidCredentialsException : Exception

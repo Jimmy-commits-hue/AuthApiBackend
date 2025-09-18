@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Web.Migrations
+namespace AuthApi.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -32,7 +32,9 @@ namespace Web.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    isVerified = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    RegistrationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    isVerified = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    sentLoginNumber = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,12 +48,13 @@ namespace Web.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     userId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    verificationCode = table.Column<string>(type: "longtext", nullable: false)
+                    verificationCode = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ExpiresAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EmailSent = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     currentAttemptNumber = table.Column<int>(type: "int", nullable: false),
                     maxNumberOfAttempts = table.Column<int>(type: "int", nullable: false),
-                    codeStatus = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    isActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,6 +118,12 @@ namespace Web.Migrations
                 name: "IX_EmailVerification_userId",
                 table: "EmailVerification",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailVerification_verificationCode",
+                table: "EmailVerification",
+                column: "verificationCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LoginAttempt_userId",

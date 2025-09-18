@@ -1,8 +1,8 @@
-﻿using Web.Database;
-using Web.Interfaces;
+﻿using AuthApi.Database;
+using AuthApi.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.Repository
+namespace AuthApi.Repository
 {
 
     public class RefreshTokenRepository : IRefreshTokenRepository
