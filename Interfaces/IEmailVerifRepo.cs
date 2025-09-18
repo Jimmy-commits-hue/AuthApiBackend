@@ -1,6 +1,6 @@
-﻿using Web.Models;
+﻿using AuthApi.Models;
 
-namespace Web.Interfaces
+namespace AuthApi.Interfaces
 {
 
     public interface IEmailVerifRepo
@@ -12,7 +12,7 @@ namespace Web.Interfaces
 
         Task<int> GetMinNumberOfAttempts(Guid userId);
 
-        Task<EmailVerification?> GetCodeAsync(Guid codeId);
+        Task<EmailVerification?> GetCodeAsync(string code);
 
         Task UpdateCodeAsync(EmailVerification emailverification);
             

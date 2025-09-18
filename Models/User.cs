@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models
+namespace AuthApi.Models
 {
 
     public class User
@@ -31,13 +31,17 @@ namespace Web.Models
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*[@!&#?])(?=.*[1-9]).{8}$")]
         public string Password { get; set; } = string.Empty;
 
+        public DateOnly RegistrationDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+
         public bool isVerified { get; set; } = false;
 
-        public List<EmailVerification> emailVerification { get; set; } = new();
+        public bool sentLoginNumber { get; set; } = false;
 
-        public List<LoginAttempts> loginAttempts { get; set; } = new();
+        public List<EmailVerification> EmailVerification { get; set; } = new();
 
-        public List<RefreshToken> refreshToken { get; set; } = new();
+        public List<LoginAttempts> LoginAttempts { get; set; } = new();
+
+        public List<RefreshToken> RefreshToken { get; set; } = new();
 
     }
 

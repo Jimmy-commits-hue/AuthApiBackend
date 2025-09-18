@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models
+namespace AuthApi.Models
 {
 
     public class RefreshToken
@@ -12,7 +12,7 @@ namespace Web.Models
         [Required]
         public Guid userId { get; set; }
 
-        public User user { get; set; } = null!;
+        public User User { get; set; } = null!;
 
         [Required]
         public string token {  get; set; } = string.Empty;

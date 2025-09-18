@@ -1,7 +1,7 @@
-﻿using Web.DTOs;
-using Web.Models;
+﻿using AuthApi.DTOs;
+using AuthApi.Models;
 
-namespace Web.Interfaces
+namespace AuthApi.Interfaces
 {
 
     public interface IUserService
@@ -9,7 +9,7 @@ namespace Web.Interfaces
 
         Task<Guid> CreateUserAsync(RegisterDto user);
 
-        Task<User?> GetUserAsync(LoginDtos login);
+        Task<User> GetUserAsync(LoginDtos login);
 
         Task<User> GetUserById(Guid userId);
 
@@ -18,6 +18,8 @@ namespace Web.Interfaces
         Task UpdateUserNumberAsync(string customNumber, User user);
 
         Task UpdateUserAsync(User user);
+
+        Task IsLoginEmailSent(User user);
 
         Task DeleteUserAsync(DeleteUserDtos deleteUser);
 

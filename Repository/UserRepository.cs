@@ -1,9 +1,9 @@
-﻿using Web.Database;
-using Web.Interfaces;
-using Web.Models;
+﻿using AuthApi.Database;
+using AuthApi.Interfaces;
+using AuthApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.Repository
+namespace AuthApi.Repository
 {
 
     public class UserRepository : IUserRepository

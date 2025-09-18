@@ -1,16 +1,18 @@
-﻿using Web.Models;
+﻿using AuthApi.Models;
 
-namespace Web.Interfaces
+namespace AuthApi.Interfaces
 {
 
     public interface IEmailService
     {
 
-        Task<Guid> CreateCodeAsync(Guid userid);
+        Task<string> CreateCodeAsync(Guid userid);
 
-        Task<Guid> ReCreateCodeAsync(Guid userId);
+        Task<string> ReCreateCodeAsync(Guid userId);
 
-        Task<EmailVerification> GetCodeAsync(Guid id);
+        Task<EmailVerification> GetCodeAsync(string code);
+
+        Task IsEmailSent(EmailVerification email);
 
         Task UpdateCodeAsync(EmailVerification verification);
 

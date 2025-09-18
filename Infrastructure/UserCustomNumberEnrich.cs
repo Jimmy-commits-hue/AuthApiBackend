@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Microsoft.AspNetCore.Http;
 
-namespace Web.Infrastructure
+namespace AuthApi.Infrastructure
 {
 
     public class UserCustomNumberEnrich : ILogEventEnricher

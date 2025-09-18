@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Web.Utilities
+namespace AuthApi.Utilities
 {
 
     public static class HashHelper

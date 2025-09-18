@@ -1,4 +1,4 @@
-﻿namespace Web.Interfaces
+﻿namespace AuthApi.Interfaces
 {
 
     public interface IRefreshTokenService
