@@ -1,6 +1,5 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
-using Microsoft.AspNetCore.Http;
 
 namespace AuthApi.Infrastructure
 {

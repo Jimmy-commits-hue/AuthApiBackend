@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace AuthApi.DTOs
+﻿namespace AuthApi.DTOs
 {
 
     public class UpdateDto
