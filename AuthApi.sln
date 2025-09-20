@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApi", "AuthApi.csproj", "{43CA595B-84D3-4F84-A8C2-F63428BCA056}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApiTest", "..\AuthApiTest\AuthApiTest.csproj", "{AF281DD5-DB6F-444D-BF92-4D8E0FB6905B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{43CA595B-84D3-4F84-A8C2-F63428BCA056}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43CA595B-84D3-4F84-A8C2-F63428BCA056}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43CA595B-84D3-4F84-A8C2-F63428BCA056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF281DD5-DB6F-444D-BF92-4D8E0FB6905B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF281DD5-DB6F-444D-BF92-4D8E0FB6905B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF281DD5-DB6F-444D-BF92-4D8E0FB6905B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF281DD5-DB6F-444D-BF92-4D8E0FB6905B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

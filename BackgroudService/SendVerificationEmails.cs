@@ -1,11 +1,7 @@
 ﻿using AuthApi.Database;
 using AuthApi.Exceptions;
 using AuthApi.Interfaces;
-using AuthApi.Models;
-using AuthApi.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace AuthApi.BackgroudService
 {

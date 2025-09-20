@@ -77,7 +77,7 @@ namespace AuthApi.Controllers
             try
             {
 
-                Guid userId = await _userService.CreateUserAsync(User);
+                Guid userId = await _userService.CreateUserAsync(User, default(CancellationToken));
                 await emailService.CreateCodeAsync(userId);
 
             }
@@ -155,7 +155,7 @@ namespace AuthApi.Controllers
 
             }
 
-            var userInfo = await _userService.GetUserById(codeInfo.userId);
+            var userInfo = await _userService.GetUserById(codeInfo.userId, default(CancellationToken));
 
             if (!TimeHelper.isCodeActive((DateTime)codeInfo.ExpiresAt!, codeInfo.isActive))
             {
@@ -229,7 +229,7 @@ namespace AuthApi.Controllers
             try
             {
 
-                user = (await _userService.GetUserAsync(login))!;
+                user = (await _userService.GetUserAsync(login, default(CancellationToken)))!;
 
             }
             catch (UserNotFoundException ex)

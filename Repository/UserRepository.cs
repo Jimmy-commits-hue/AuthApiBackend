@@ -13,18 +13,18 @@ namespace AuthApi.Repository
 
         public UserRepository(AuthApiDbContext context) => this.context = context;
 
-        public async Task CreateAsync(User user)
+        public async Task CreateAsync(User user, CancellationToken cancellationToken)
         {
 
             context.User.Add(user);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
          
         }
 
-        public async Task<User?> GetAsync(string customerNumber)
+        public async Task<User?> GetAsync(string customerNumber, CancellationToken cancellationToken)
         {
 
-            return await context.User.Where(u => u.customNumber == customerNumber).FirstOrDefaultAsync();
+            return await context.User.Where(u => u.customNumber == customerNumber).FirstOrDefaultAsync(cancellationToken);
 
         }
 
@@ -35,17 +35,17 @@ namespace AuthApi.Repository
 
         }
 
-        public async Task<User?> GetUserByIdNumber(string idNumber)
+        public async Task<User?> GetUserByIdNumber(string idNumber, CancellationToken cancellationToken)
         {
 
-            return await context.User.Where(u => u.IdNumber.CompareTo(idNumber) == 0).FirstOrDefaultAsync();
+            return await context.User.Where(u => u.IdNumber.CompareTo(idNumber) == 0).FirstOrDefaultAsync(cancellationToken);
 
         }
 
-        public async Task<User?> GetUserById(Guid userId)
+        public async Task<User?> GetUserById(Guid userId, CancellationToken cancellationToken)
         {
 
-            return await context.User.FindAsync(userId);
+            return await context.User.Where(u => u.Id.CompareTo(userId) == 0).FirstOrDefaultAsync(cancellationToken);
 
         }
 

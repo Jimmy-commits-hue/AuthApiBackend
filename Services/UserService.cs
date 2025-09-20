@@ -13,44 +13,46 @@ namespace AuthApi.Services
 
         private readonly IUserRepository _db;
 
-        public UserService(IUserRepository user, IEmailService _emailService)
+        public UserService(IUserRepository user)
         {
 
             _db = user;
    
         }
 
-        public async Task<Guid> CreateUserAsync(RegisterDto user)
+        public async Task<Guid> CreateUserAsync(RegisterDto user, CancellationToken cancellationToken)
         {
             
-            User userdata = new User
-            {
-
-                Email = user.Email
-
-            };
-
-            userdata.Password = new PasswordHasher<User>().HashPassword(userdata, user.Password);
-            userdata.Surname = user.Surname;
-            userdata.IdNumber = HashHelper.HashId(user.IdNumber);
-            userdata.FirstName = user.FirstName;
-            
-            
-            var userExist = await _db.GetUserByIdNumber(userdata.IdNumber);
+            var IdNumber = HashHelper.HashId(user.IdNumber);
+ 
+            var userExist = await _db.GetUserByIdNumber(IdNumber, cancellationToken);
 
             if (userExist != null)
                 throw new UserAlreadyExistException("User already exist");
 
-            await _db.CreateAsync(userdata);
+            User userdata = new User
+            {
+
+                Email = user.Email
+                
+            };
+
+            userdata.Surname = user.Surname;
+            userdata.IdNumber = IdNumber;
+            userdata.FirstName = user.FirstName;
+            userdata.Password = HashHelper.HashPassword(user.Password);
+
+            await _db.CreateAsync(userdata, cancellationToken);
 
             return userdata.Id;
 
         }
 
-        public async Task<User> GetUserAsync(LoginDtos login)
+        //test passed but user.Verified needs to be removed as its of no use
+        public async Task<User> GetUserAsync(LoginDtos login, CancellationToken cancellationToken)
         {
 
-            var user = await _db.GetAsync(login.customNumber);
+            var user = await _db.GetAsync(login.customNumber, cancellationToken);
 
             if (user == null)
                 throw new UserNotFoundException("User does not exist");
@@ -59,9 +61,7 @@ namespace AuthApi.Services
                 throw new UserNotActivatedException("User did not verify email");
 
 
-            PasswordVerificationResult results = new PasswordHasher<User>().
-                                                 VerifyHashedPassword(new User { Email = user.Email},
-                                                 user.Password, login.password);
+            PasswordVerificationResult results = HashHelper.VerifyHashPassword(user.Password, login.password);
 
             if (results == PasswordVerificationResult.Failed)
                 throw new InvalidCredentialsException("Invalid Credentials");
@@ -70,18 +70,20 @@ namespace AuthApi.Services
 
         }
 
-        public async Task<User> GetUserById(Guid userId)
+        //yet to be refractor and test
+        public async Task<User> GetUserById(Guid userId, CancellationToken cancellationToken)
         {
             
-            var userInfo = await _db.GetUserById(userId);
+            var userInfo = await _db.GetUserById(userId, cancellationToken);
 
             if (userInfo == null)
                 throw new UserNotFoundException("User does not exist");
 
             return userInfo;
 
-        } 
+        }
 
+        //yet to be refractor and test
         public async Task UpdateUserNumberAsync(string customNumber, User user)
         {
 
@@ -92,6 +94,7 @@ namespace AuthApi.Services
 
         }
 
+        //yet to be refractor and test
         public async Task IsLoginEmailSent(User user)
         {
 
@@ -100,11 +103,12 @@ namespace AuthApi.Services
             await _db.UpdateAsync(user);
 
         }
-
-        public async Task UpdateUserAsync(User user)
+        
+        //yet to be refractor and test
+        public async Task UpdateUserAsync(User user, CancellationToken cancellationToken)
         {
 
-            var userExist = await _db.GetAsync(user.customNumber);
+            var userExist = await _db.GetAsync(user.customNumber, cancellationToken);
 
             if (userExist == null)
                 throw new UserNotFoundException("User does not exist");
@@ -113,14 +117,14 @@ namespace AuthApi.Services
 
         }
 
-
-        public async Task DeleteUserAsync(DeleteUserDtos deleteUser)
+        //yet to be refractor and test
+        public async Task DeleteUserAsync(DeleteUserDtos deleteUser, CancellationToken cancellationToken)
         {
 
             if (deleteUser.customNumber == null)
                 throw new UserNotActivatedException("User not active");
 
-            var user = await _db.GetAsync(deleteUser.customNumber);
+            var user = await _db.GetAsync(deleteUser.customNumber, cancellationToken);
 
             if (user == null)
                 throw new UserNotFoundException("User does not exist");
