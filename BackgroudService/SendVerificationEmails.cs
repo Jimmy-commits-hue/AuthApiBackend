@@ -1,5 +1,5 @@
 ﻿using AuthApi.Database;
-using AuthApi.Exceptions;
+using AuthApi.Exceptions.ExceptionsTypes;
 using AuthApi.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

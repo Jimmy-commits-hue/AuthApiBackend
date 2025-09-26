@@ -1,4 +1,4 @@
-﻿namespace AuthApi.Exceptions
+﻿namespace AuthApi.Exceptions.ExceptionsTypes
 {
 
     public class CodeExpiredException : Exception

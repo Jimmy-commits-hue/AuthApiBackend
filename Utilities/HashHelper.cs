@@ -11,11 +11,17 @@ namespace AuthApi.Utilities
         public static string HashId(string id)
         {
 
-            using var sha256 = SHA256.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET_KEY") + id);
-            var computeHash = sha256.ComputeHash(bytes);
+            byte[] keybytes = Convert.FromBase64String(Environment.GetEnvironmentVariable("JWT_KEY")!);
+            Console.WriteLine(keybytes.ToString());
 
-            return Convert.ToBase64String(computeHash);
+            byte[] databytes = Encoding.UTF8.GetBytes(id);
+            Console.WriteLine(databytes.ToString());
+            using (var hmac = new HMACSHA256(keybytes))
+            {
+                var hashedDataBytes = hmac.ComputeHash(databytes);
+
+                return BitConverter.ToString(hashedDataBytes).Replace("-", "").ToLowerInvariant();
+            }
 
         }
 

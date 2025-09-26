@@ -4,6 +4,7 @@ using AuthApi.Models;
 using Microsoft.AspNetCore.Identity;
 using AuthApi.Exceptions;
 using AuthApi.Utilities;
+using AuthApi.Exceptions.ExceptionsTypes;
 
 namespace AuthApi.Services
 {

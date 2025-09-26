@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Net.Smtp;
 using AuthApi.Exceptions;
+using AuthApi.Exceptions.ExceptionsTypes;
 
 namespace AuthApi.Services
 {

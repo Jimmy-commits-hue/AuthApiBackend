@@ -11,6 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using AuthApi.Security;
+using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.OpenApi.Models;
+using AuthApi.Exceptions;
+using AuthApi.Controllers.v1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +26,7 @@ builder.Services.AddSingleton<UserCustomNumberEnrich>();
 builder.Services.AddHostedService<CleanUpDatabaseBackgroundService>();
 builder.Services.AddHostedService<SendVerificationEmails>();
 builder.Services.AddHostedService<CleanUpUnActiveUsers>();
+builder.Services.AddExceptionHandler<HandleAllExceptions>();
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -30,8 +37,7 @@ try
     {
 
         config.ReadFrom.Configuration(context.Configuration).
-        Enrich.FromLogContext().WriteTo.Console().
-        Enrich.With(service.GetRequiredService<UserCustomNumberEnrich>()).
+        WriteTo.Console().Enrich.With(service.GetRequiredService<UserCustomNumberEnrich>()).
         WriteTo.Seq(context.Configuration["Serilog:serverUrl"] ?? "http://localhost:5341");
 
     });
@@ -46,6 +52,21 @@ try
         Configuration["connectionString:User"]};Database={builder.Configuration["connectionString:Database"]};Password={password};";
 
     builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("EmailConfig"));
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    }).AddCookie()
+    .AddGoogle(options =>
+    {
+        options.ClientId = Environment.GetEnvironmentVariable("CLIENT_ID")!;
+        options.ClientSecret = Environment.GetEnvironmentVariable("SECRET")!;
+        options.CallbackPath = "/google-login";
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+    });
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
      .AddJwtBearer(options =>
@@ -136,25 +157,56 @@ try
 
     builder.Services.AddControllers();
 
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+
+        options.Conventions.Controller<HomeController>().HasApiVersion(new Microsoft.AspNetCore.Mvc.ApiVersion(1,0));
+    });
+
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
-        options.AddSecurityDefinition("CookieAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+        //options.SwaggerDoc("V1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AuthApi", Version = "V1" });
+
+        options.AddSecurityDefinition("OAuth", new OpenApiSecurityScheme
         {
-            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new OpenApiOAuthFlows
+            {
+                AuthorizationCode = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = new Uri("https://accounts.google.com/o/oauth/v2/auth"),
+                    TokenUrl = new Uri("https://auth.googleapi.com/token"),
+                    Scopes = new Dictionary<string, string>()
+                    {
+                        {"OpenId", "OpenID Authentication" },
+                        {"Profile", "Your profile information" },
+                        {"email", "Your email information" }
+                    }
+                }
+            }
+
+        });
+        options.AddSecurityDefinition("CookieAuth", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.ApiKey,
             Name = "accessToken",
-            In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
+            In = ParameterLocation.Cookie,
             Description = "JWT stored in the accessToken cookie"
         });
 
-        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
-                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                new OpenApiSecurityScheme
                 {
-                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    Reference = new OpenApiReference
                     {
-                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Type = ReferenceType.SecurityScheme,
                         Id = "CookieAuth"
                     }
                 },
@@ -170,12 +222,19 @@ try
     {
 
         app.UseSwagger();
-        app.UseSwaggerUI();
-
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthApi V1");
+            options.OAuthClientId(Environment.GetEnvironmentVariable("CLIENT_ID"));
+            options.OAuthClientSecret(Environment.GetEnvironmentVariable("SECRET"));
+            options.OAuthScopeSeparator(" ");
+        }
+        );
+        
     }
-
+    app.UseExceptionHandler(_ => { });
     app.UseHttpsRedirection();
-
+    app.UseCors("SwaggerCors");
     app.UseAuthentication();
     app.UseAuthorization();
 
